@@ -1,7 +1,6 @@
 %E.E.E.-analyzer - MAIN by Fabio Pinciroli
 %Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO:
-%<26>vedere per problema di certificati sul sito web dqm
 %<48>mettere apposto label file report
 
 [fName, fDir] = uigetfile('*.csv', 'Seleziona file');                      %chiedi nome file
@@ -29,9 +28,10 @@ tDate = fName(length(fName) - 19: length(fName) - 10);
 
 %salva report dqm----------------------------------------------------------
 %websave([fDir 'dqmReport'], strcat('https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))));
-%FIXARE PROBLEMA DEI CERTIFICATI!!!
-%http://dotbootstrap.x2q.net/java-default-keystore-password-cacerts/
-%http://it.mathworks.com/matlabcentral/answers/92506-can-i-force-urlread-and-other-matlab-functions-which-access-internet-websites-to-open-secure-websi http://it.mathworks.com/matlabcentral/answers/39563-managing-public-key-certificates-in-matlab
+comA = strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -p -nd --no-check-certificate -P "', strcat(fDir, strcat('" ', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))); 
+system(comA);
+comA = strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -r -a png -nd --no-check-certificate -P "', strcat(fDir, strcat('" ', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))));
+system(comA);
 
 format long;                                                               %imposta display a piena risoluzione
 
