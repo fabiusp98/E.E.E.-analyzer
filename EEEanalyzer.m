@@ -1,5 +1,5 @@
 %E.E.E.-analyzer - MAIN by Fabio Pinciroli
-%DISTRIBUTED UNDER GPL V3 LICENSE
+%Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO:
 %<26>vedere per problema di certificati sul sito web dqm
 %<48>mettere apposto label file report

@@ -1,5 +1,5 @@
 %E.E.E.-analyzer - GRAPH ENGINE by Fabio Pinciroli
-%DISTRIBUTED UNDER GPL V3 LICENSE
+%Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO: NONE
 
 function GraphStats(repFile, path, dati, col, name, ko)
