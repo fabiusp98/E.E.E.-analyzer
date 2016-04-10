@@ -2,6 +2,7 @@
 %Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO:
 %<48>mettere apposto label file report
+%<75>finire roba tof
 
 [fName, fDir] = uigetfile('*.csv', 'Seleziona file');                      %chiedi nome file
 tic();
@@ -128,11 +129,11 @@ for cnt = 1:1:varA
 end
 
 for cnt = 1:1:varA 
-    dati(cnt, 16) = radtodeg(dati(cnt, 13)); 
+    dati(cnt, 16) = rad2deg(dati(cnt, 13)); 
 end
 
 for cnt = 1:1:varA 
-    dati(cnt, 17) = radtodeg(dati(cnt, 15)); 
+    dati(cnt, 17) = rad2deg(dati(cnt, 15)); 
 end
 
 GraphStats(fRep, fDir, dati, 16, 'Radius (deg)', 0);
