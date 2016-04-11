@@ -38,7 +38,7 @@ lMode.LineStyle = '--';
 lAvg = refline(0,TOFavg);
 lAvg.Color = 'cyan';
 lAvg.LineStyle = '--';
-legend('Dati', strcat('Massimo = ', 32, num2str(TOFmax)), strcat('Minimo = ', 32, num2str(TOFmin)), strcat('Mediana = ', 32, num2str(TOFmedian)), strcat('Moda = ', 32, num2str(TOFmode)), strcat('Media = ', 32, num2str(TOFavg)));
+legend('Dati', strcat('Max = ', 32, num2str(TOFmax)), strcat('Min = ', 32, num2str(TOFmin)), strcat('Median = ', 32, num2str(TOFmedian)), strcat('Mode = ', 32, num2str(TOFmode)), strcat('Average = ', 32, num2str(TOFavg)));
 saveas(gcf, [path strcat(name, 'Stats.jpg')]);                             %salva in directory attuale con nome corretto in jpeg                                            
 
 if ko == 0                                                                 %se persistenza off chiudi finestre
