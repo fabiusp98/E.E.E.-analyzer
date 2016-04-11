@@ -28,10 +28,9 @@ tDay = fName(length(fName) - 11: length(fName) - 10);
 tDate = fName(length(fName) - 19: length(fName) - 10);
 
 %salva report dqm----------------------------------------------------------
-%websave([fDir 'dqmReport'], strcat('https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))));
-comA = strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -p -nd --no-check-certificate -P "', strcat(fDir, strcat('" ', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))); 
+comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))));
 system(comA);
-comA = strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -r -a png -nd --no-check-certificate -P "', strcat(fDir, strcat('" ', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))));
+comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"C:\Program Files (x86)\GnuWin32\bin\wget.exe" -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))));
 system(comA);
 
 format long;                                                               %imposta display a piena risoluzione
