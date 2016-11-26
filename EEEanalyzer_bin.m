@@ -4,18 +4,26 @@
 %<48>mettere apposto label file report
 %<75>finire roba tof
 
-[fName, fDir] = uigetfile('*.csv', 'Seleziona file');                      %chiedi nome file
+[fName, fDir] = uigetfile('*.bin', 'Seleziona file');                      %chiedi nome file
 [wGetName, wGetDir] = uigetfile('*.exe', 'Seleziona file');                      %chiedi wget
 [v20Name, v20Dir] = uigetfile('*.exe', 'Seleziona file');                      %chiedi eee_v20
 
 tic();  %PROFILING TIMER
 
 mkdir(fDir, fName(1: length(fName) - 4));                                  %fai cartella col nome del file
-movefile(fullfile(fDir, fName), strcat(fDir,strcat('/', fName(1: length(fName) - 4))));    %muovici detro il file csv
+movefile(fullfile(fDir, fName), strcat(fDir,strcat('/', fName(1: length(fName) - 4))));    %muovici detro il file
 
 fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));             %aggiorna fDir alla locazione attuale
 
+disp(strcat('/', fName(1: length(fName) - 4)));
+
+comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(v20Dir, strcat(v20Name, strcat('" "', strcat(fName, strcat('" "', strcat(fDir, '"')))))))))); %run eee_v20 on file, to current directory
+disp(comA);
+system(comA);
+
 fRep = fopen(fullfile(fDir, 'REPORT.txt'), 'wt');                          %apri file report numerico
+
+fName = strcat(fName(1: length(fName) - 3), 'out');
 
 %importa dati--------------------------------------------------------------
 dati = csvread(fullfile(fDir, fName));                                     
@@ -142,15 +150,8 @@ end
 GraphStats(fRep, fDir, dati, 16, 'Radius (deg)', 0);
 GraphStats(fRep, fDir, dati, 17, 'Azimuth (deg)', 0);
 
-fclose(fRep);
-disp('DONE');
-toc();
+fclose(fRep);   %close report
 
-
-
-
-
-
-
-
-
+disp('DONE');   %display end of run message
+toc();  %DEBUG profiling timer
+close('all');   %force close all files
