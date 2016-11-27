@@ -3,6 +3,7 @@
 %TODO:
 %<48>mettere apposto label file report
 %<75>finire roba tof
+%identified problem with auto import: remove header, change from tab separation to comma separation(regexp: s{3,} to ,), different columns, ask prof for that
 
 [fName, fDir] = uigetfile('*.bin', 'Seleziona file');                      %chiedi nome file
 [wGetName, wGetDir] = uigetfile('*.exe', 'Seleziona file');                      %chiedi wget
