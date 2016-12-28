@@ -47,29 +47,15 @@ tDay = fName(length(fName) - 11: length(fName) - 10);
 
 tDate = fName(length(fName) - 19: length(fName) - 10);
 
-%salva report dqm----------------------------------------------------------
+%download and save the dqm Report------------------------------------------
 comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
 system(comA);
 comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
 system(comA);
 
-format long;                                                               %imposta display a piena risoluzione
+format long;                                                               %Set full decimal resolution
 
-%Statistiche di base X, Y, Z, chi^2, TOF, e lunghezza traccia--------------
-GraphStats(fRep, fDir, dati, 6, 'X', 0);
-GraphStats(fRep, fDir, dati, 7, 'Y', 0);
-GraphStats(fRep, fDir, dati, 8, 'Z', 0);
-GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0);
-GraphStats(fRep, fDir, dati, 10, 'TOF', 0);
-GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
-
-%Differenza colonne tempi--------------------------------------------------
-[varA, varB] = size(dati);                                                 %calcola dimensioni array
-fprintf(fRep, '\nRun duration in senconds: %f\n', dati(varA, 3) - dati(1, 3)); 
-fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(varA, 4) - dati(1, 4));
-fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(varA, 5) - dati(1, 5));
-
-%Conta quanti chi^2 maggiori di 10-----------------------------------------
+%Count hits with chi^2 > 10------------------------------------------------
 tot = 0;
 for cnt = 1:1:varA
     if dati(cnt, 9) > 10
@@ -78,7 +64,21 @@ for cnt = 1:1:varA
 end
 fprintf(fRep, '\nHits with Chi^2 > 10: %f\n', tot);
 
-%Conta TOF negativi--------------------------------------------------------
+%Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
+GraphStats(fRep, fDir, dati, 6, 'X', 0);
+GraphStats(fRep, fDir, dati, 7, 'Y', 0);
+GraphStats(fRep, fDir, dati, 8, 'Z', 0);
+GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0);
+GraphStats(fRep, fDir, dati, 10, 'TOF', 0);
+GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
+
+%TO REVISE-----------------------------------------------------------------
+[varA, varB] = size(dati);                                                 %calcola dimensioni array
+fprintf(fRep, '\nRun duration in senconds: %f\n', dati(varA, 3) - dati(1, 3)); 
+fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(varA, 4) - dati(1, 4));
+fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(varA, 5) - dati(1, 5));
+
+%Count negative flight times-----------------------------------------------
 tot = 0;
 for cnt = 1:1:varA
     if dati(cnt, 10) < 0
@@ -87,10 +87,10 @@ for cnt = 1:1:varA
 end
 fprintf(fRep, '\nNegative TOF: %f\n', tot);
 
-%Conta TOF 0 e metti in array----------------------------------------------
+%Count zero flight times and prepare separate array array------------------
 tot = 0;
 for cnt = 1:1:varA
-    if dati(cnt, 10) == 0
+    if dati(cnt, 9) == 0
         tot = tot + 1;
         negTof(tot) = cnt;                                                 %#ok<SAGROW> %aggiungi indirizzo di ogni TOF negativo all'array                                   
     end
@@ -152,7 +152,7 @@ for cnt = 1:1:varA
 end
 
 for cnt = 1:1:varA 
-    dati(cnt, 16) = rad2deg(dati(cnt, 1)); 
+    dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
 end
 
 GraphStats(fRep, fDir, dati, 15, 'Radius (deg)', 0);

@@ -64,7 +64,7 @@ for cnt = 1:1:varA
 end
 fprintf(fRep, '\nHits with Chi^2 > 10: %f\n', tot);
 
-%Statistiche di base X, Y, Z, chi^2, TOF, e lunghezza traccia--------------
+%Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
 GraphStats(fRep, fDir, dati, 6, 'X', 0);
 GraphStats(fRep, fDir, dati, 7, 'Y', 0);
 GraphStats(fRep, fDir, dati, 8, 'Z', 0);
@@ -72,13 +72,13 @@ GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0);
 GraphStats(fRep, fDir, dati, 10, 'TOF', 0);
 GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
 
-%Differenza colonne tempi--------------------------------------------------
+%TO REVISE-----------------------------------------------------------------
 [varA, varB] = size(dati);                                                 %calcola dimensioni array
 fprintf(fRep, '\nRun duration in senconds: %f\n', dati(varA, 3) - dati(1, 3)); 
 fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(varA, 4) - dati(1, 4));
 fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(varA, 5) - dati(1, 5));
 
-%Conta TOF negativi--------------------------------------------------------
+%Count negative flight times-----------------------------------------------
 tot = 0;
 for cnt = 1:1:varA
     if dati(cnt, 10) < 0
@@ -87,17 +87,17 @@ for cnt = 1:1:varA
 end
 fprintf(fRep, '\nNegative TOF: %f\n', tot);
 
-%Conta TOF 0 e metti in array----------------------------------------------
+%Count zero flight times and prepare separate array array------------------
 tot = 0;
 for cnt = 1:1:varA
-    if dati(cnt, 10) == 0
+    if dati(cnt, 9) == 0
         tot = tot + 1;
         negTof(tot) = cnt;                                                 %#ok<SAGROW> %aggiungi indirizzo di ogni TOF negativo all'array                                   
     end
 end
 fprintf(fRep, 'Null TOF: %f\n', tot);
 
-%Statistiche raggruppate di X Y e Z----------------------------------------
+%gropued statistics for X Y e Z----------------------------------------
 figure('Name', 'Coordinates Stats');
 
 yy(1, 1) = min(dati(:,6));
@@ -134,7 +134,7 @@ if ko == 0                                                                 %se p
  close();
 end
 
-%Calcoli angoli------------------------------------------------------------
+%Angular statistics--------------------------------------------------------
 for cnt = 1:1:varA 
     dati(cnt, 12) = acos(dati(cnt, 8)); 
 end
