@@ -47,22 +47,13 @@ tDay = fName(length(fName) - 11: length(fName) - 10);
 
 tDate = fName(length(fName) - 19: length(fName) - 10);
 
-%download and save the dqm Report------------------------------------------
+%salva report dqm----------------------------------------------------------
 comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
 system(comA);
 comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
 system(comA);
 
-format long;                                                               %Set full decimal resolution
-
-%Count hits with chi^2 > 10------------------------------------------------
-tot = 0;
-for cnt = 1:1:varA
-    if dati(cnt, 9) > 10
-        tot = tot + 1;
-    end
-end
-fprintf(fRep, '\nHits with Chi^2 > 10: %f\n', tot);
+format long;                                                               %imposta display a piena risoluzione
 
 %Statistiche di base X, Y, Z, chi^2, TOF, e lunghezza traccia--------------
 GraphStats(fRep, fDir, dati, 6, 'X', 0);
@@ -77,6 +68,15 @@ GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
 fprintf(fRep, '\nRun duration in senconds: %f\n', dati(varA, 3) - dati(1, 3)); 
 fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(varA, 4) - dati(1, 4));
 fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(varA, 5) - dati(1, 5));
+
+%Conta quanti chi^2 maggiori di 10-----------------------------------------
+tot = 0;
+for cnt = 1:1:varA
+    if dati(cnt, 9) > 10
+        tot = tot + 1;
+    end
+end
+fprintf(fRep, '\nHits with Chi^2 > 10: %f\n', tot);
 
 %Conta TOF negativi--------------------------------------------------------
 tot = 0;
@@ -152,7 +152,7 @@ for cnt = 1:1:varA
 end
 
 for cnt = 1:1:varA 
-    dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
+    dati(cnt, 16) = rad2deg(dati(cnt, 1)); 
 end
 
 GraphStats(fRep, fDir, dati, 15, 'Radius (deg)', 0);
