@@ -3,7 +3,6 @@
 %TODO:
 %Finish setting up the report
 %Finish TOF calculations
-%identified problem with auto import: remove header, change from tab separation to comma separation(regexp: s{3,} to ,), columns fixed
 
 %Get component paths-------------------------------------------------------
 [fName, fDir] = uigetfile('*.bin', 'Seleziona file');	%get file name
@@ -26,15 +25,15 @@ fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to th
 fRep = fopen(fullfile(fDir, 'REPORT.txt'), 'wt');	%open report file
 
 %Data import---------------------------------------------------------------
-%comA = strcat('powershell -Command "(get-content ', ' ' ,fDir, fName, ') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ', ' ' ,fDir, fName, '"');	%Replace spaces with commas in data file
 comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];
 system(comA);
 
-%comA = strcat('powershell -Command "(get-content ', ' ' ,fDir, fName, ') | select -Skip 1 | set-content ', ' ', fDir, fName, '"');  %remove first line in file
 comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"'];
 system(comA);
 
-dati = csvread(fullfile(fDir, fName));  %import data                              
+dati = csvread(fullfile(fDir, fName));  %import data      
+
+[dataLenght, varB] = size(dati); %calculate array size
 
 %Extract Telescope name, acquisition date----------------------------------
 tName = fName(1: length(fName) - 21);                                      
@@ -57,12 +56,23 @@ format long;                                                               %Set 
 
 %Count hits with chi^2 > 10------------------------------------------------
 tot = 0;
-for cnt = 1:1:varA
+for cnt = 1:1:dataLenght
     if dati(cnt, 9) > 10
         tot = tot + 1;
     end
 end
-fprintf(fRep, '\nHits with Chi^2 > 10: %f\n', tot);
+fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);
+
+%Remove entries with chi^2 > %10-------------------------------------------
+cnt = 1;    %arrays in matlab start at 1 (?°?°??? ???
+while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates (?°?°??? ???
+    if dati(cnt, 9) > 10    
+         dati(cnt,:) = [];
+         dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
+         cnt = cnt - 1; %recheck same line becasue everything shifted back one row
+    end
+    cnt = cnt + 1 ;
+end
 
 %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
 GraphStats(fRep, fDir, dati, 6, 'X', 0);
@@ -73,14 +83,13 @@ GraphStats(fRep, fDir, dati, 10, 'TOF', 0);
 GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
 
 %TO REVISE-----------------------------------------------------------------
-[varA, varB] = size(dati);                                                 %calcola dimensioni array
-fprintf(fRep, '\nRun duration in senconds: %f\n', dati(varA, 3) - dati(1, 3)); 
-fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(varA, 4) - dati(1, 4));
-fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(varA, 5) - dati(1, 5));
+fprintf(fRep, '\nRun duration in senconds: %f\n', dati(dataLenght, 3) - dati(1, 3)); 
+fprintf(fRep, '!!!VAL_COL_5: %f\n', dati(dataLenght, 4) - dati(1, 4));
+fprintf(fRep, '!!!VAL_COL_6: %f\n', dati(dataLenght, 5) - dati(1, 5));
 
 %Count negative flight times-----------------------------------------------
 tot = 0;
-for cnt = 1:1:varA
+for cnt = 1:1:dataLenght
     if dati(cnt, 10) < 0
         tot = tot + 1;
     end
@@ -89,7 +98,7 @@ fprintf(fRep, '\nNegative TOF: %f\n', tot);
 
 %Count zero flight times and prepare separate array array------------------
 tot = 0;
-for cnt = 1:1:varA
+for cnt = 1:1:dataLenght
     if dati(cnt, 9) == 0
         tot = tot + 1;
         negTof(tot) = cnt;                                                 %#ok<SAGROW> %aggiungi indirizzo di ogni TOF negativo all'array                                   
@@ -127,31 +136,31 @@ legend(l);
 clear xx;
 clear yy;
 
-saveas(gcf, [fDir 'XYZ Stats.jpg']);                                       %salva in directory attuale con nome corretto in jpeg
+saveas(gcf, [fDir 'XYZ Stats.jpg']);                                       %Save image to directory
 
 ko = 0; %DEBUG!!!
-if ko == 0                                                                 %se persistenza off chiudi finestre
+if ko == 0                                                                 %automatic close graph windows
  close();
 end
 
 %Angular statistics--------------------------------------------------------
-for cnt = 1:1:varA 
+for cnt = 1:1:dataLenght 
     dati(cnt, 12) = acos(dati(cnt, 8)); 
 end
 
-for cnt = 1:1:varA 
+for cnt = 1:1:dataLenght 
     dati(cnt, 13) = dati(cnt, 8)/dati(cnt, 6); 
 end
 
-for cnt = 1:1:varA 
+for cnt = 1:1:dataLenght 
     dati(cnt, 14) = atan(dati(cnt, 7)); 
 end
 
-for cnt = 1:1:varA 
+for cnt = 1:1:dataLenght 
     dati(cnt, 15) = rad2deg(dati(cnt, 12)); 
 end
 
-for cnt = 1:1:varA 
+for cnt = 1:1:dataLenght 
     dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
 end
 
