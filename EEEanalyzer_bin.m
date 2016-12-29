@@ -14,9 +14,12 @@ figSaveMode = 'png'; %this changes the way figures are saved, it supports all th
 
 %Create working folder and convert file------------------------------------
 mkdir(fDir, fName(1: length(fName) - 4));	%create working folder
-movefile(fullfile(fDir, fName), strcat(fDir,strcat('/', fName(1: length(fName) - 4))));	%move the file to the working folder
+movefile(fullfile(fDir, fName), strcat(fDir,'/', fName(1: length(fName) - 4)));	%move the file to the working folder
 
 fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));	%update fDir pointer to new file location
+
+mkdir(fDir, 'DQM');	%create dqm folder
+mkdir(fDir, 'STATISTICS');	%create statistics folder
 
 %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(v20Dir, strcat(v20Name, strcat('" "', strcat(fName, strcat('" "', strcat(fDir, '"'))))))))));	%run eee_v20 on file, to current directory
 comA = strcat('cd "',fDir,'" &&','"',v20Dir,v20Name,'" "',fName,'" "',fDir, '"');
@@ -24,7 +27,7 @@ system(comA);
 
 fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to the converted one
 
-fRep = fopen(fullfile(fDir, 'REPORT.txt'), 'wt');	%open report file
+fRep = fopen(fullfile(fDir, 'STATISTICS REPORT.txt'), 'wt');	%open report file
 
 %Data import---------------------------------------------------------------
 comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
@@ -51,10 +54,10 @@ tDate = fName(length(fName) - 19: length(fName) - 10);
 %download and save the dqm Report------------------------------------------
 %Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
 %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the page
-comA = strcat('cd "',fDir,'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
+comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
 system(comA);
 
-comA = strcat('cd "',fDir,'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
+comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
 %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the images
 system(comA);
 
@@ -82,12 +85,12 @@ while cnt < dataLenght %for loop done with while because for in matlab doesn't c
 end
 
 %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
-GraphStats(fRep, fDir, dati, 6, 'X', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 7, 'Y', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 8, 'Z', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 10, 'TOF', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 6, 'X', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 7, 'Y', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 8, 'Z', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 9, 'Chi^2', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 10, 'TOF', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 11, 'Track lenght', 0, figSaveMode);
 
 %TO REVISE-----------------------------------------------------------------
 fprintf(fRep, '\nRun duration in senconds: %f\n', dati(dataLenght, 3) - dati(1, 3)); 
@@ -171,8 +174,8 @@ for cnt = 1:1:dataLenght
     dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
 end
 
-GraphStats(fRep, fDir, dati, 15, 'Radius (deg)', 0, figSaveMode);
-GraphStats(fRep, fDir, dati, 16, 'Azimuth (deg)', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 15, 'Radius (deg)', 0, figSaveMode);
+GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
 
 fclose(fRep);   %close report
 
