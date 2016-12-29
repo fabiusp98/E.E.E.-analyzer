@@ -9,15 +9,14 @@
 [wGetName, wGetDir] = uigetfile('*.exe', 'Seleziona file');	%get path to wget
 [v20Name, v20Dir] = uigetfile('*.exe', 'Seleziona file');	%get path to eee_v20
 
-tic();  %PROFILING TIMER
-
 %Create working folder and convert file------------------------------------
 mkdir(fDir, fName(1: length(fName) - 4));	%create working folder
 movefile(fullfile(fDir, fName), strcat(fDir,strcat('/', fName(1: length(fName) - 4))));	%move the file to the working folder
 
 fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));	%update fDir pointer to new file location
 
-comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(v20Dir, strcat(v20Name, strcat('" "', strcat(fName, strcat('" "', strcat(fDir, '"'))))))))));	%run eee_v20 on file, to current directory
+%comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(v20Dir, strcat(v20Name, strcat('" "', strcat(fName, strcat('" "', strcat(fDir, '"'))))))))));	%run eee_v20 on file, to current directory
+comA = strcat('cd "',fDir,'" &&','"',v20Dir,v20Name,'" "',fName,'" "',fDir, '"');
 system(comA);
 
 fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to the converted one
@@ -48,10 +47,12 @@ tDate = fName(length(fName) - 19: length(fName) - 10);
 
 %download and save the dqm Report------------------------------------------
 %Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
-comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the page
+%comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the page
+comA = strcat('cd "',fDir,'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
 system(comA);
 
-comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the images
+comA = strcat('cd "',fDir,'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
+%comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the images
 system(comA);
 
 format long;                                                               %Set full decimal resolution
@@ -172,5 +173,4 @@ GraphStats(fRep, fDir, dati, 16, 'Azimuth (deg)', 0);
 
 fclose(fRep);   %close report
 
-disp('DONE');   %display end of run message
-toc();  %DEBUG profiling timer
+disp('DONE');
