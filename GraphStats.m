@@ -2,7 +2,7 @@
 %Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO: NONE
 
-function GraphStats(repFile, path, dati, col, name, ko)
+function GraphStats(repFile, path, dati, col, name, ko, saveMode)
 
 figure('Name', strcat(name, ' stats'));                                    %spawna finestra
 
@@ -39,7 +39,7 @@ lAvg = refline(0,TOFavg);
 lAvg.Color = 'cyan';
 lAvg.LineStyle = '--';
 legend('Dati', strcat('Max = ', 32, num2str(TOFmax)), strcat('Min = ', 32, num2str(TOFmin)), strcat('Median = ', 32, num2str(TOFmedian)), strcat('Mode = ', 32, num2str(TOFmode)), strcat('Average = ', 32, num2str(TOFavg)));
-saveas(gcf, [path strcat(name, 'Stats.jpg')]);                             %salva in directory attuale con nome corretto in jpeg                                            
+saveas(gcf, [path strcat(name, 'Stats')], saveMode);                                 %salva in directory attuale con nome corretto in png                                            
 
 if ko == 0                                                                 %se persistenza off chiudi finestre
  close();
@@ -51,7 +51,7 @@ assX = TOFmin:0.00001:TOFmax;                                              %gene
 plot(assX, pdf(pd, assX));                                                 %stampa curva
 title(strcat(name, ' distribution'));                                      %imposta scritte, etc
 clear assX;                                                                %cancella indice
-saveas(gcf, [path strcat(name, 'Distribution.jpg')]);                      %salva in directory attuale con nome corretto in jpeg 
+saveas(gcf, [path strcat(name, 'Distribution')], saveMode);                          %salva in directory attuale con nome corretto in png
 
 if ko == 0
  close();

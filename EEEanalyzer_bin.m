@@ -4,6 +4,9 @@
 %Finish setting up the report
 %Finish TOF calculations
 
+%EXPERIMENTAL
+figSaveMode = 'png'; %this changes the way figures are saved, it supports all the things that saveas does
+
 %Get component paths-------------------------------------------------------
 [fName, fDir] = uigetfile('*.bin', 'Seleziona file');	%get file name
 [wGetName, wGetDir] = uigetfile('*.exe', 'Seleziona file');	%get path to wget
@@ -79,12 +82,12 @@ while cnt < dataLenght %for loop done with while because for in matlab doesn't c
 end
 
 %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
-GraphStats(fRep, fDir, dati, 6, 'X', 0);
-GraphStats(fRep, fDir, dati, 7, 'Y', 0);
-GraphStats(fRep, fDir, dati, 8, 'Z', 0);
-GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0);
-GraphStats(fRep, fDir, dati, 10, 'TOF', 0);
-GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0);
+GraphStats(fRep, fDir, dati, 6, 'X', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 7, 'Y', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 8, 'Z', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 9, 'Chi^2', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 10, 'TOF', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 11, 'Track lenght', 0, figSaveMode);
 
 %TO REVISE-----------------------------------------------------------------
 fprintf(fRep, '\nRun duration in senconds: %f\n', dati(dataLenght, 3) - dati(1, 3)); 
@@ -140,7 +143,7 @@ legend(l);
 clear xx;
 clear yy;
 
-saveas(gcf, [fDir 'XYZ Stats.jpg']);                                       %Save image to directory
+saveas(gcf, [fDir 'XYZ Stats.png']);                                       %Save image to directory
 
 ko = 0; %DEBUG!!!
 if ko == 0                                                                 %automatic close graph windows
@@ -168,8 +171,8 @@ for cnt = 1:1:dataLenght
     dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
 end
 
-GraphStats(fRep, fDir, dati, 15, 'Radius (deg)', 0);
-GraphStats(fRep, fDir, dati, 16, 'Azimuth (deg)', 0);
+GraphStats(fRep, fDir, dati, 15, 'Radius (deg)', 0, figSaveMode);
+GraphStats(fRep, fDir, dati, 16, 'Azimuth (deg)', 0, figSaveMode);
 
 fclose(fRep);   %close report
 
