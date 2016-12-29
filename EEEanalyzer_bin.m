@@ -25,10 +25,10 @@ fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to th
 fRep = fopen(fullfile(fDir, 'REPORT.txt'), 'wt');	%open report file
 
 %Data import---------------------------------------------------------------
-comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];
-system(comA);
+comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
+system(comA); %Done on powershell for speed
 
-comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"'];
+comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"']; %remove first line of data file(description)
 system(comA);
 
 dati = csvread(fullfile(fDir, fName));  %import data      
@@ -47,31 +47,34 @@ tDay = fName(length(fName) - 11: length(fName) - 10);
 tDate = fName(length(fName) - 19: length(fName) - 10);
 
 %download and save the dqm Report------------------------------------------
-comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
+%Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
+comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the page
 system(comA);
-comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/')))))))))));
+
+comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the images
 system(comA);
 
 format long;                                                               %Set full decimal resolution
 
 %Count hits with chi^2 > 10------------------------------------------------
-tot = 0;
-for cnt = 1:1:dataLenght
-    if dati(cnt, 9) > 10
-        tot = tot + 1;
+tot = 0;    %counter
+for cnt = 1:1:dataLenght    %pass all the data
+    if dati(cnt, 9) > 10    %if hit found
+        tot = tot + 1;  %advance counter
     end
 end
 fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);
 
 %Remove entries with chi^2 > %10-------------------------------------------
-cnt = 1;    %arrays in matlab start at 1 (?°?°??? ???
-while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates (?°?°??? ???
-    if dati(cnt, 9) > 10    
-         dati(cnt,:) = [];
+cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
+
+while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates ??? – – – :-)
+    if dati(cnt, 9) > 10 %if erroneous entry found   
+         dati(cnt,:) = [];  %delete row
          dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
-         cnt = cnt - 1; %recheck same line becasue everything shifted back one row
+         cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
     end
-    cnt = cnt + 1 ;
+    cnt = cnt + 1 ; %advance to the next row
 end
 
 %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
@@ -101,7 +104,7 @@ tot = 0;
 for cnt = 1:1:dataLenght
     if dati(cnt, 9) == 0
         tot = tot + 1;
-        negTof(tot) = cnt;                                                 %#ok<SAGROW> %aggiungi indirizzo di ogni TOF negativo all'array                                   
+        negTof(tot) = cnt;                                   
     end
 end
 fprintf(fRep, 'Null TOF: %f\n', tot);
