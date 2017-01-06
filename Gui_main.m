@@ -61,22 +61,67 @@ end
 
 %Choose File button
 function btn_ChooseFile_Callback(hObject, eventdata, handles)
+    [fName, fDir] = uigetfile('*.bin', 'Select data file'); %spawn choose file dialog and get data into local variables
+    
+    handles.fName = fName; %move variables to matlab handle
+    handles.fDir = fDir;
+    
+    guidata(hObject,handles); %update global handle
+    
+    set(handles.txt_Filepath, 'String', strcat(fDir, fName));   %Update the the filepath text
 end
 
 
 
 %Filepath text modified
 function txt_Filepath_Callback(hObject, eventdata, handles)
+    
+    str = get(handles.txt_Filepath, 'String');  %get string into local variable
+    cnt = length(str);  %set counter to string length
+    
+    while(str((cnt - 1) : cnt) ~= '\') %go backwards from the end of the string until you find \
+        cnt = cnt - 1;
+    end
+    
+    fName = str(cnt : length(str)); %from the next character to the last \ to the end of the string is the file name
+    fDir = str(1 : (cnt - 1));  %from the beginning of the string to the last \ is the directory
+    
+    handles.fName = fName; %move variables to matlab handle
+    handles.fDir = fDir;
+    
+    guidata(hObject,handles); %update global handle
 end
 
 
 %Wget button pressed
 function btn_ChooseWget_Callback(hObject, eventdata, handles)
+    [wGetName, wGetDir] = uigetfile('*.exe', 'Seleziona file'); %spawn choose file dialog and get data into local variables
+    
+    handles.wGetName = wGetName; %move variables to matlab handle
+    handles.wGetDir = wGetDir;
+    
+    guidata(hObject,handles); %update global handle
+    
+    set(handles.txt_WgetPath, 'String', strcat(wGetDir, wGetName));   %Update the the filepath text
 end
 
 
 %Wget text changed
 function txt_WgetPath_Callback(hObject, eventdata, handles)
+    str = get(handles.txt_WgetPath, 'String');  %get string into local variable
+    cnt = length(str);  %set counter to string length
+    
+    while(str((cnt - 1) : cnt) ~= '\') %go backwards from the end of the string until you find \
+        cnt = cnt - 1;
+    end
+    
+    wGetName = str(cnt : length(str)); %from the next character to the last \ to the end of the string is the file name
+    wGetDir = str(1 : (cnt - 1));  %from the beginning of the string to the last \ is the directory
+    
+    handles.wGetName = wGetName; %move variables to matlab handle
+    handles.wGetDir = wGetDir;
+    
+    guidata(hObject,handles); %update global handle
 end
 
 
