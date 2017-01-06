@@ -1,5 +1,5 @@
 %E.E.E.-analyzer - MAIN by Fabio Pinciroli
-%Copyright 2016 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
+%Copyright 2016-2017 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 %TODO:
 %Finish setting up the report
 %Finish TOF calculations
