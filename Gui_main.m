@@ -54,8 +54,8 @@ function Gui_main_OpeningFcn(hObject, eventdata, handles, varargin)
     %TEST IF ALL OTHER MATLAB FILES ARE PRESENT
     
     handles.GraphFormat = 'png'; %create default values
-    handles.StatsEnable = 1;
-    handles.DqmEnable = 1;
+    handles.StatsEnable = 0;
+    handles.DqmEnable = 0;
     
     %HANDLE WGET AND EEE_V20 PREFERENCES FILE
     
@@ -111,7 +111,7 @@ function btn_Go_Callback(hObject, eventdata, handles)
     end
     
     if(isDataValid == true)
-        %run main program here and pass parameters
+        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir);
     end
 end
 
