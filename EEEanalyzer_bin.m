@@ -12,8 +12,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     mkdir(fDir, 'DQM');	%create dqm folder
     mkdir(fDir, 'STATISTICS');	%create statistics folder
 
-    %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(v20Dir, strcat(v20Name, strcat('" "', strcat(fName, strcat('" "', strcat(fDir, '"'))))))))));	%run eee_v20 on file, to current directory
-    comA = strcat('cd "',fDir,'" &&','"',v20Dir,v20Name,'" "',fName,'" "',fDir, '"');
+    comA = strcat('cd "',fDir,'" &&','"',v20Dir,v20Name,'" "',fName,'" "',fDir, '"'); %run eee_v20 on file, to current directory
     system(comA);
 
     fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to the converted one
@@ -44,12 +43,10 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     %download and save the dqm Report------------------------------------------
     %Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
-    %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('" -p -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the page
-    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
+    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
     system(comA);
 
-    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/');
-    %comA = strcat('cd "', strcat(fDir, strcat('" &&', strcat('"', strcat(wGetDir, strcat(wGetName, strcat('"  -r -a png -nd --no-check-certificate', strcat(' https://www1.cnaf.infn.it/eee/monitor//dqmreport/', strcat(tName, strcat('/', strcat(tDate, '/'))))))))))); %Get the images
+    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the images
     system(comA);
 
     format long;                                                               %Set full decimal resolution
