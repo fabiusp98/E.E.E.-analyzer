@@ -73,17 +73,23 @@ function Gui_main_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.GraphFormat = 'png'; %create default values
     handles.StatsEnable = 0;
     handles.DqmEnable = 0;
+    handles.wGetName = '';
     
     %handle preferences
     try    %try to load preferences
-        handles.wGetName = getpref('EEEanalyzer','wGetName');
+        handles.wGetName = getpref('EEEanalyzer','wGetName');   %get data
         handles.wGetDir = getpref('EEEanalyzer','wGetDir');
+        set(handles.txt_WgetPath, 'String', strcat(handles.wGetDir, handles.wGetName)); %udate gui
+    
         handles.v20Name = getpref('EEEanalyzer','v20Name');
         handles.v20Dir = getpref('EEEanalyzer','v20Dir');
-        handles.GraphFormat = getpref('EEEanalyzer','GraphFormat');
-    catch	%if failed
+        set(handles.txt_V20Path, 'String', strcat(handles.v20Dir, handles.v20Name));
+        
+    catch A	%if failed
         %do nothing
     end
+    
+    guidata(hObject, handles); %update preferences
     
     
 end
@@ -145,7 +151,6 @@ function btn_Go_Callback(hObject, eventdata, handles)
     getpref('EEEanalyzer','wGetDir', handles.wGetDir);
     getpref('EEEanalyzer','v20Name', handles.v20Name);
     getpref('EEEanalyzer','v20Dir', handles.v20Dir);
-    getpref('EEEanalyzer','GraphFormat', handles.GraphFormat);
     guidata(hObject, handles);  %update global handle
 end
 
@@ -251,6 +256,7 @@ function cbx_DqmEnable_Callback(hObject, eventdata, handles)
     end
 
     handles.DqmEnable = var;    %move variable to matlab handle
+    
     guidata(hObject,handles); %update global handle
 end
 
