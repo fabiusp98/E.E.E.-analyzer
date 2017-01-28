@@ -239,6 +239,3 @@ function ppmen_GraphFormat_Callback(hObject, eventdata, handles)
     handles.GraphFormat = get(handles.ppmen_GraphFormat, 'String');;    %get data and move it to matlab handle
     guidata(hObject,handles); %update global handle
 end
-
-
-
