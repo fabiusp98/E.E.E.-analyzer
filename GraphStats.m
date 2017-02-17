@@ -18,7 +18,6 @@ fprintf(repFile, '%s avg: %f\n', name, TOFavg);
 fprintf(repFile, '%s mode: %f\n', name, TOFmode);
 fprintf(repFile, '%s median: %f\n\n', name, TOFmedian);
 
-
 plot(dati(:,col),'+');                                                     %stampa dati in ordine
 title(name);                                                               %imposta scritte, etc
 xlabel('Numero evento');

@@ -2,7 +2,7 @@
 %Copyright 2016-2017 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 
 function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v20Dir)
-
+    
     %Create working folder and convert file------------------------------------
     mkdir(fDir, fName(1: length(fName) - 4));	%create working folder
     movefile(fullfile(fDir, fName), strcat(fDir,'/', fName(1: length(fName) - 4)));	%move the file to the working folder
@@ -71,7 +71,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         end
         cnt = cnt + 1 ; %advance to the next row
     end
-
+    
+    set(0,'DefaultFigureVisible','off');    %DEBUG TURN OFF FIGS!
     %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 6, 'X', 0, figSaveMode);
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 7, 'Y', 0, figSaveMode);
@@ -166,6 +167,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
 
     fclose(fRep);   %close report
-
+    
+    set(0,'DefaultFigureVisible','on'); %DEBUG TRUN BACK ON FIGS!
+    
     disp('DONE');
 end
