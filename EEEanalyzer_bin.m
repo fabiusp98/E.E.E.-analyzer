@@ -3,6 +3,8 @@
 
 function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v20Dir)
     
+    wbar = waitbar(0/10, 'Setting up folders');    %set progress bar
+    
     %Create working folder and convert file------------------------------------
     mkdir(fDir, fName(1: length(fName) - 4));	%create working folder
     movefile(fullfile(fDir, fName), strcat(fDir,'/', fName(1: length(fName) - 4)));	%move the file to the working folder
@@ -11,7 +13,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     mkdir(fDir, 'DQM');	%create dqm folder
     mkdir(fDir, 'STATISTICS');	%create statistics folder
-
+    
+    waitbar(1/10, wbar, 'Converting from bin');    %update progress bar
+    
     comA = strcat('cd "',fDir,'" &&','"',v20Dir,v20Name,'" "',fName,'" "',fDir, '"'); %run eee_v20 on file, to current directory
     system(comA);
 
@@ -20,12 +24,16 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fRep = fopen(fullfile(fDir, 'STATISTICS REPORT.txt'), 'wt');	%open report file
 
     %Data import---------------------------------------------------------------
+    waitbar(2/10, wbar, 'Formatting data');    %update progress bar
+    
     comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
     system(comA); %Done on powershell for speed
 
     comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"']; %remove first line of data file(description)
     system(comA);
-
+    
+    waitbar(3/10, wbar, 'Importing data');    %update progress bar
+    
     dati = csvread(fullfile(fDir, fName));  %import data      
 
     [dataLenght, varB] = size(dati); %calculate array size
@@ -43,6 +51,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     %download and save the dqm Report------------------------------------------
     %Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
+    
+    waitbar(4/10, wbar, 'Downloading DQM data');    %update progress bar
+    
     comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
     system(comA);
 
@@ -52,6 +63,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     format long;                                                               %Set full decimal resolution
 
     %Count hits with chi^2 > 10------------------------------------------------
+    waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
+    
     tot = 0;    %counter
     for cnt = 1:1:dataLenght    %pass all the data
         if dati(cnt, 9) > 10    %if hit found
@@ -75,6 +88,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     set(0,'DefaultFigureVisible','off');    %Turn on figs
     
     %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
+    waitbar(6/10, wbar, 'Doing graphs');    %update progress bar
+    
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 6, 'X', 0, figSaveMode);
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 7, 'Y', 0, figSaveMode);
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 8, 'Z', 0, figSaveMode);
@@ -83,9 +98,11 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 11, 'Track lenght', 0, figSaveMode);
 
     %Print miscellaneous statistics--------------------------------------------
+    waitbar(7/10, wbar, 'Doing miscellaneous statistics');    %update progress bar
     fprintf(fRep, '\nRun duration in senconds: %f\n', dati(dataLenght, 3) - dati(1, 3)); 
 
     %Count and print negative flight times-------------------------------------
+    waitbar(8/10, wbar, 'Counting negative TOF');    %update progress bar
     tot = 0;
     for cnt = 1:1:dataLenght
         if dati(cnt, 10) < 0
@@ -95,6 +112,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, '\nNegative TOF: %f\n', tot);
 
     %Count zero flight times and prepare separate array array------------------
+    waitbar(9/10, wbar, 'Counting 0 TOF');    %update progress bar
     tot = 0;
     for cnt = 1:1:dataLenght
         if dati(cnt, 9) == 0
@@ -105,6 +123,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Null TOF: %f\n', tot);
 
     %gropued statistics for X Y Z-------------------------------------------
+    waitbar(10/10, wbar, 'Doing grouped statistics');    %update progress bar
     figure('Name', 'Coordinates Stats');
 
     yy(1, 1) = min(dati(:,6));
@@ -170,4 +189,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     set(0,'DefaultFigureVisible','on'); %Turn figs back on, or everything brakes
     
     disp('DONE');
+    
+    delete(wbar);   %close waitbar
+    msgbox('Conversion finished');
 end
