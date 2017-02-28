@@ -136,38 +136,38 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     saveas(gcf, [fDir 'XYZ Stats.png']);                                       %Save image to directory
 
-    ko = 0; 
+    ko = 0; %DEBUG!!!
     if ko == 0                                                                 %automatic close graph windows
      close();
     end
 
-%     %Angular statistics TO REVISE--------------------------------------------------------
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 12) = acos(dati(cnt, 8)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 13) = dati(cnt, 8)/dati(cnt, 6); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 14) = atan(dati(cnt, 7)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 15) = rad2deg(dati(cnt, 12)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
-%     end
-% 
-%     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 15, 'Radius (deg)', 0, figSaveMode);
-%     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
+    %Angular statistics--------------------------------------------------------
+    for cnt = 1:1:dataLenght 
+        dati(cnt, 12) = acos(dati(cnt, 8)); 
+    end
+
+    for cnt = 1:1:dataLenght 
+        dati(cnt, 13) = dati(cnt, 8)/dati(cnt, 6); 
+    end
+
+    for cnt = 1:1:dataLenght 
+        dati(cnt, 14) = atan(dati(cnt, 7)); 
+    end
+
+    for cnt = 1:1:dataLenght 
+        dati(cnt, 15) = rad2deg(dati(cnt, 12)); 
+    end
+
+    for cnt = 1:1:dataLenght 
+        dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
+    end
+
+    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 15, 'Radius (deg)', 0, figSaveMode);
+    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
 
     fclose(fRep);   %close report
     
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on, or everything brakes
+    set(0,'DefaultFigureVisible','on'); %DEBUG TRUN BACK ON FIGS!
     
     disp('DONE');
 end
