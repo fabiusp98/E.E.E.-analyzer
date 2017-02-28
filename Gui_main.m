@@ -142,16 +142,18 @@ function btn_Go_Callback(hObject, eventdata, handles)
         isDataValid = false;    %set flag to false
     end
     
-    if(isDataValid == true)    %if all data is valid
-        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir);  %run analysis
-    end
-    
     %save preferences
     setpref('EEEanalyzer','wGetName', handles.wGetName);
     getpref('EEEanalyzer','wGetDir', handles.wGetDir);
     getpref('EEEanalyzer','v20Name', handles.v20Name);
     getpref('EEEanalyzer','v20Dir', handles.v20Dir);
     guidata(hObject, handles);  %update global handle
+    
+    if(isDataValid == true)    %if all data is valid
+        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir);  %run analysis
+    end
+    
+    
 end
 
 %Choose File button
