@@ -49,8 +49,9 @@ pd = fitdist(dati(:,col), 'Normal');                                       %calc
 assX = TOFmin:0.00001:TOFmax;                                              %setup axes
 plot(assX, pdf(pd, assX));                                                 %plot curve
 title(strcat(name, ' distribution'));                                      %setup axes name
-clear assX;                                                                %delete index
-saveas(gcf, [path strcat(name, 'Distribution')], saveMode);                          %save
+clear assX;                                                                %cancella indice
+saveas(gcf, [path strcat(name, 'Distribution')], saveMode);                          %salva in directory attuale con nome corretto in png
+
 if ko == 0
  close();
 end
