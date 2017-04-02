@@ -37,6 +37,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     dati = csvread(fullfile(fDir, fName));  %import data      
 
     [dataLenght, varB] = size(dati); %calculate array size
+    
+   %{
+    *=calcualted field
+    |1         |2                   |3                     |4          |5                              |6       |7       |8       |9    |10 |11          |12*             |13*       |14*       |15*            |
+    |RUN NUMBER|TELESCOPE RUN NUMBER|SECONDS SINCE 1/1/2007|NANOSECONDS|MICROSECONDS SINCE STARD OF RUN|VECTOR X|VECTOR Y|VECTOR Z|CHI^2|TOF|TRACK LENGHT|EFFECTIVE NUMBER|THETA(RAD)|THETA(DEG)|0-360 DIRECTION|
+    %}
 
     %Extract Telescope name, acquisition date----------------------------------
     tName = fName(1: length(fName) - 21);                                      
@@ -61,7 +67,44 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     system(comA);
 
     format long;                                                               %Set full decimal resolution
-
+    
+    %Add other columns to working dataset--------------------------
+    tot = 0; %counter, init to 0
+    
+    for cnt = 1:1:dataLenght    %pass all the data
+        %effective number
+        dati(cnt, 12) = tot; %save counter do column
+        tot = tot + 1;  %update counter
+                
+        %theta(rad)
+        dati(cnt, 13) = asin(dati(cnt, 8));
+        
+        %theta(deg)
+        dati(cnt, 14) = rad2deg(dati(cnt, 8));
+        
+        %0-360 direction !!!TODO: validate algorithm
+        if((dati(cnt, 6) > 0) && ((dati(cnt, 7) > 0)))
+            dataOut = rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+        else
+            if((dati(cnt, 6) > 0) && ((dati(cnt, 7) < 0)))
+                dataOut = 180 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+            else
+                if((dati(cnt, 6) < 0) && ((dati(cnt, 7) < 0)))
+                    dataOut = 180 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+                else
+                    dataOut = 360 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+                end
+            end
+        end        
+        
+        dati(cnt, 15) = dataOut;
+        
+    end
+    
+    %save dirty data do first excel file--------------------------
+    xlswrite(strcat(fDir, '/dirty data.xls'), dati);
+    
+    
     %Count hits with chi^2 > 10------------------------------------------------
     waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
     
@@ -72,7 +115,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         end
     end
     fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);
-
+    
+    
+    %TODO!!! instead of removing entires, move to another dataset
     %Remove entries with chi^2 > %10-------------------------------------------
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
 
@@ -84,8 +129,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         end
         cnt = cnt + 1 ; %advance to the next row
     end
-    
-    set(0,'DefaultFigureVisible','off');    %Turn on figs
+    %{
+    set(0,'DefaultFigureVisible','off');    %Turn off figs
     
     %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
     waitbar(6/10, wbar, 'Doing graphs');    %update progress bar
@@ -183,11 +228,11 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 % 
 %     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 15, 'Radius (deg)', 0, figSaveMode);
 %     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
-
-    fclose(fRep);   %close report
-    
+  
     set(0,'DefaultFigureVisible','on'); %Turn figs back on, or everything brakes
     
+%}   
+    fclose(fRep);   %close report
     disp('DONE');
     
     delete(wbar);   %close waitbar
