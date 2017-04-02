@@ -41,7 +41,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
    %{
     *=calcualted field
     |1         |2                   |3                     |4          |5                              |6       |7       |8       |9    |10 |11          |12*             |13*       |14*       |15*            |
-    |RUN NUMBER|TELESCOPE RUN NUMBER|SECONDS SINCE 1/1/2007|NANOSECONDS|MICROSECONDS SINCE STARD OF RUN|VECTOR X|VECTOR Y|VECTOR Z|CHI^2|TOF|TRACK LENGHT|EFFECTIVE NUMBER|THETA(RAD)|THETA(DEG)|0-360 DIRECTION|
+    |RUN NUMBER|TELESCOPE HIT NUMBER|SECONDS SINCE 1/1/2007|NANOSECONDS|MICROSECONDS SINCE STARD OF RUN|VECTOR X|VECTOR Y|VECTOR Z|CHI^2|TOF|TRACK LENGHT|EFFECTIVE NUMBER|THETA(RAD)|THETA(DEG)|0-360 DIRECTION|
     %}
 
     %Extract Telescope name, acquisition date----------------------------------
@@ -102,6 +102,20 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     end
     
     %!!!TODO do statistics to dirty dataset--------------------
+    %heading
+    fprintf(fRep, '\nDIRTY STATISTICS:\n');
+    
+    %no hit events
+    fprintf(fRep, 'no hit events: %f\n', dati(datalenght,2) - dati(datalenght,12));
+    
+    %run duration in seconds
+    fprintf(fRep, 'run duration: %f s\n', dati(1,3) - dati(datalenght,3));
+    
+    %run duration in minutes
+    fprintf(fRep, 'run duration: %f s\n', (dati(1,3) - dati(datalenght,3)) \ 60);    
+    
+    
+    
     
     %save dirty data do first excel file--------------------------
     xlswrite(strcat(fDir, '/dirty data.xls'), dati);
@@ -116,7 +130,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         if dati(cnt, 9) > 10 %if erroneous entry found
              tot = tot + 1; %update count
              chiArray(tot + 1,:) = dati(cnt,:); %save data to other array (position is counter + 1 because matlab arrays suck and start at 1)
-             dati(cnt,:) = [];  %delete row in main array
+             %dati(cnt,:) = [];  %delete row in main array
              dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
              cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
         end
@@ -126,6 +140,39 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);   %save chi2 count to report
     
     xlswrite(strcat(fDir, '/chi2.xls'), chiArray);  %save excel file for chi2 rejects
+    
+    %count and move entries with tof < 0-------------------------------------------
+    waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
+    
+    cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
+    tot = 0;    %tof entries total
+    
+    while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates ??? – – – :-)
+        if dati(cnt, 10) < 0 %if erroneous entry found
+             tot = tot + 1; %update count
+             tofArray(tot + 1,:) = dati(cnt,:); %save data to other array (position is counter + 1 because matlab arrays suck and start at 1)
+             dati(cnt,:) = [];  %delete row in main array
+             dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
+             cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
+        end
+        cnt = cnt + 1 ; %advance to the next row
+    end
+    
+    fprintf(fRep, 'TOF < 0: %f\n', tot);   %save tof count to report
+    
+    xlswrite(strcat(fDir, '/tof.xls'), tofArray);  %save excel file for tof rejects
+    
+    %clean back up for chi^2 > 0 (previously counted and capied, but not deleted to not hinder the stats for the TOF)
+    cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
+    
+    while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates ??? – – – :-)
+        if dati(cnt, 9) > 10 %if erroneous entry found
+             dati(cnt,:) = [];  %delete row in main array
+             dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
+             cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
+        end
+        cnt = cnt + 1 ; %advance to the next row
+    end
     
     %{
     set(0,'DefaultFigureVisible','off');    %Turn off figs
