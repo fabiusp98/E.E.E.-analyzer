@@ -101,34 +101,32 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         
     end
     
+    %!!!TODO do statistics to dirty dataset--------------------
+    
     %save dirty data do first excel file--------------------------
     xlswrite(strcat(fDir, '/dirty data.xls'), dati);
     
-    
-    %Count hits with chi^2 > 10------------------------------------------------
+    %count and move entries with chi^2 > %10-------------------------------------------
     waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
     
-    tot = 0;    %counter
-    for cnt = 1:1:dataLenght    %pass all the data
-        if dati(cnt, 9) > 10    %if hit found
-            tot = tot + 1;  %advance counter
-        end
-    end
-    fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);
-    
-    
-    %TODO!!! instead of removing entires, move to another dataset
-    %Remove entries with chi^2 > %10-------------------------------------------
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
-
+    tot = 0;    %chi2 entries total
+    
     while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates ??? – – – :-)
-        if dati(cnt, 9) > 10 %if erroneous entry found   
-             dati(cnt,:) = [];  %delete row
+        if dati(cnt, 9) > 10 %if erroneous entry found
+             tot = tot + 1; %update count
+             chiArray(tot + 1,:) = dati(cnt,:); %save data to other array (position is counter + 1 because matlab arrays suck and start at 1)
+             dati(cnt,:) = [];  %delete row in main array
              dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
              cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
         end
         cnt = cnt + 1 ; %advance to the next row
     end
+    
+    fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);   %save chi2 count to report
+    
+    xlswrite(strcat(fDir, '/chi2.xls'), chiArray);  %save excel file for chi2 rejects
+    
     %{
     set(0,'DefaultFigureVisible','off');    %Turn off figs
     
