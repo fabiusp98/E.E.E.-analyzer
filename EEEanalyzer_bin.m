@@ -12,7 +12,6 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));	%update fDir pointer to new file location
 
     mkdir(fDir, 'DQM');	%create dqm folder
-    mkdir(fDir, 'STATISTICS');	%create statistics folder
     
     waitbar(1/10, wbar, 'Converting from bin');    %update progress bar
     
@@ -135,7 +134,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     %save dirty data do first excel file--------------------------
     xlswrite(strcat(fDir, '/dirty data.xls'), dati);
     
-    %Stats for track lenght
+    %Stats for track lenght----------------------------------------------
     fprintf(fRep, 'Track lenght max: %f \n', max(dati(:,11)));
     fprintf(fRep, 'Track lenght max: %f \n', min(dati(:,11)));
     fprintf(fRep, 'Track lenght mean: %f \n', mean(dati(:,11)));
@@ -161,11 +160,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     figure('Name', 'Track lenght distribution');
     plot(dist);
     title('DIRTY DATA - Track lenght distribution');
-    saveas(gcf, [path 'DIRTY - distribution'], saveMode);
+    grid on;
+    saveas(gcf, [fDir, 'DIRTY - distribution'], figSaveMode);
     close();
     
     
-    Track lenght max: %f s\n', max(dati(:,11)))
+   
     %count and move entries with chi^2 > %10-------------------------------------------
     waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
     
