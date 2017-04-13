@@ -143,8 +143,8 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Track lenght median: %f \n', median(dati(:,11)));
     
     %binning
-    %define edges (now every 5 degrees)
-    edges = 0:5:365;
+    %define edges (now every 1 degrees)
+    edges = 0:1:365;
     
     %do bins
     dist = histcounts (dati, edges);
