@@ -177,8 +177,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
              tot = tot + 1; %update count
              chiArray(tot + 1,:) = dati(cnt,:); %save data to other array (position is counter + 1 because matlab arrays suck and start at 1)
              %dati(cnt,:) = [];  %delete row in main array
-             dataLenght = dataLenght - 1;   %decrease array size because a row has been deleted
-             cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
+             %cnt = cnt - 1; %recheck same line because everything above the current position shifted back one row
         end
         cnt = cnt + 1 ; %advance to the next row
     end
