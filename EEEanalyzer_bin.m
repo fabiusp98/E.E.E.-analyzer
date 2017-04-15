@@ -41,6 +41,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     
     [dataLenght, ~] = size(dati); %calculate array size
     
+    %Folder cleanup--------------------------------------------------------
+    delete(strcat(fDir, fName(1: length(fName) - 3), 'out'));
+    delete(strcat(fDir, fName(1: length(fName) - 3), '2tt'));
+    delete(strcat(fDir, fName(1: length(fName) - 3), 'sum'));
+    delete(strcat(fDir, fName(1: length(fName) - 3), 'tim'));
+    delete(strcat(fDir, 'eee_calib.txt'));
     
    %{
     *=calcualted field
