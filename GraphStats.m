@@ -7,7 +7,17 @@ function GraphStats(dati, name, fDir, figSaveMode)
     edges = 0:1:365;
     
     %do bins
-    dist = histcounts (dati, edges);
+    dist = histcounts (dati(:,15), edges);
+    
+    %{
+    %polar plot 
+    figure('Name', strcat(name, ' - polar'));
+    plot(dist);
+    title(strcat(name, ' - POLAR'));
+    view(90, -90);
+    saveas(gcf, [fDir, strcat('POLAR - ', name)], figSaveMode);
+    close();
+    %}
     
     %apply correction factor
     %{

@@ -179,9 +179,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     set(0,'DefaultFigureVisible','on'); %Turn figs back on
     %}
     
-    set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
+    %set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
     GraphStats(dati, 'DIRTY DATA - angular distribution', fDir, figSaveMode);
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on
+    %set(0,'DefaultFigureVisible','on'); %Turn figs back on
    
     %count and move entries with chi^2 > %10-------------------------------------------
     waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
@@ -253,6 +253,20 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     end
     
     
+    %Clean data header
+    fprintf(fRep, '\nCLEAN DATA STATISTICS\n');
+     
+    %Stats for track lenght----------------------------------------------
+    fprintf(fRep, 'Track lenght max: %f \n', max(dati(:,11)));
+    fprintf(fRep, 'Track lenght max: %f \n', min(dati(:,11)));
+    fprintf(fRep, 'Track lenght mean: %f \n', mean(dati(:,11)));
+    fprintf(fRep, 'Track lenght mode: %f \n', mode(dati(:,11)));
+    fprintf(fRep, 'Track lenght median: %f \n', median(dati(:,11)));
+    
+    %DISTRIBUTION----------------------------------------------------------
+    %set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
+    GraphStats(dati, 'CLEAN DATA - angular distribution', fDir, figSaveMode);
+    %set(0,'DefaultFigureVisible','on'); %Turn figs back on
     
     %{
     set(0,'DefaultFigureVisible','off');    %Turn off figs
