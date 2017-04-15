@@ -10,9 +10,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     movefile(fullfile(fDir, fName), strcat(fDir,'/', fName(1: length(fName) - 4)));	%move the file to the working folder
 
     fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));	%update fDir pointer to new file location
-    
-    delete(strcat(fName(1: length(fName) - 3), 'out'));
-    
+
     mkdir(fDir, 'DQM');	%create dqm folder
     
     waitbar(1/10, wbar, 'Converting from bin');    %update progress bar
@@ -21,7 +19,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     system(comA);
 
     fName = strcat(fName(1: length(fName) - 3), 'out');	%update data file name to the converted one
-    
+
     fRep = fopen(fullfile(fDir, 'STATISTICS REPORT.txt'), 'wt');	%open report file
 
     %Data import---------------------------------------------------------------
@@ -35,12 +33,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     
     waitbar(3/10, wbar, 'Importing data');    %update progress bar
     
-    format long;                                                               %Set full decimal resolution
-    
     dati = csvread(fullfile(fDir, fName));  %import data      
-    
+
     [dataLenght, ~] = size(dati); %calculate array size
-    
     
    %{
     *=calcualted field
@@ -234,7 +229,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     
     xlswrite(strcat(fDir, '/tof.xls'), tofArray);  %save excel file for tof rejects
     
-    %clean back up for chi^2 > 0 (previously counted and capoed, but not deleted to not hinder the stats for the TOF)---------------
+    %clean back up for chi^2 > 0 (previously counted and capied, but not deleted to not hinder the stats for the TOF)---------------
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
     
     while cnt < dataLenght %for loop done with while because for in matlab doesn't care about upper limit updates ??? – – – :-)
