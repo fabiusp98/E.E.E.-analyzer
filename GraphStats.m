@@ -32,6 +32,7 @@ function GraphStats(dati, name, fDir, figSaveMode)
     plot(dist);
     title(name);
     grid on;
+    xlim([0 360]);
     saveas(gcf, [fDir, name], figSaveMode);
     close();
 end

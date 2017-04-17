@@ -153,33 +153,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Track lenght mode: %f \n', mode(dati(:,11)));
     fprintf(fRep, 'Track lenght median: %f \n', median(dati(:,11)));
     
-    %Distribution--------------------------------------------------------
-    %{
-    %define edges (now every 1 degrees)
-    edges = 0:1:365;
-    
-    %do bins
-    dist = histcounts (dati, edges);
-    
-    %apply correction factor
-    %{
-    correction = ???
-    [edgeNum, ~] = size(dist);
-    for cnt = 1:1:edgeNum
-        dist(cnt) = dist(cnt) * correction(cnt);
-    end
-    %}
-    set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
-    
-    figure('Name', 'Track lenght distribution');
-    plot(dist);
-    title('DIRTY DATA - Track lenght distribution');
-    grid on;
-    saveas(gcf, [fDir, 'DIRTY - distribution'], figSaveMode);
-    close();
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on
-    %}
-    
+    %Distribution--------------------------------------------------------    
     set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
     GraphStats(dati, 'DIRTY DATA - angular distribution', fDir, figSaveMode);
     set(0,'DefaultFigureVisible','on'); %Turn figs back on
@@ -269,109 +243,6 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     GraphStats(dati, 'CLEAN DATA - angular distribution', fDir, figSaveMode);
     set(0,'DefaultFigureVisible','on'); %Turn figs back on
     
-    %{
-    set(0,'DefaultFigureVisible','off');    %Turn off figs
-    
-    %Min max avg and distribution of X, Y, Z, chi^2, TOF and track lenght------
-    waitbar(6/10, wbar, 'Doing graphs');    %update progress bar
-    
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 6, 'X', 0, figSaveMode);
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 7, 'Y', 0, figSaveMode);
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 8, 'Z', 0, figSaveMode);
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 9, 'Chi^2', 0, figSaveMode);
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 10, 'TOF', 0, figSaveMode);
-    GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 11, 'Track lenght', 0, figSaveMode);
-
-    %Print miscellaneous statistics--------------------------------------------
-    waitbar(7/10, wbar, 'Doing miscellaneous statistics');    %update progress bar
-    fprintf(fRep, '\nRun duration in senconds: %f\n', dati(dataLenght, 3) - dati(1, 3)); 
-
-    %Count and print negative flight times-------------------------------------
-    waitbar(8/10, wbar, 'Counting negative TOF');    %update progress bar
-    tot = 0;
-    for cnt = 1:1:dataLenght
-        if dati(cnt, 10) < 0
-            tot = tot + 1;
-        end
-    end
-    fprintf(fRep, '\nNegative TOF: %f\n', tot);
-
-    %Count zero flight times and prepare separate array array------------------
-    waitbar(9/10, wbar, 'Counting 0 TOF');    %update progress bar
-    tot = 0;
-    for cnt = 1:1:dataLenght
-        if dati(cnt, 9) == 0
-            tot = tot + 1;
-            negTof(tot) = cnt;                                   
-        end
-    end
-    fprintf(fRep, 'Null TOF: %f\n', tot);
-
-    %gropued statistics for X Y Z-------------------------------------------
-    waitbar(10/10, wbar, 'Doing grouped statistics');    %update progress bar
-    figure('Name', 'Coordinates Stats');
-
-    yy(1, 1) = min(dati(:,6));
-    yy(1, 2) = mean(dati(:,6));
-    yy(1, 3) = max(dati(:,6));
-
-    yy(2, 1) = min(dati(:,7));
-    yy(2, 2) = mean(dati(:,7));
-    yy(2, 3) = max(dati(:,7));
-
-    yy(3, 1) = min(dati(:,8));
-    yy(3, 2) = mean(dati(:,8));
-    yy(3, 3) = max(dati(:,8));
-
-    bar(yy);
-
-    xx = {'X', 'Y', 'Z'};
-    set(gca, 'XTick', 1:4, 'XTickLabel', xx);
-
-
-    l = cell(1,3);
-    l{1} = 'Min';
-    l{2} = 'Avg';
-    l{3} = 'Max';
-    legend(l);
-
-    clear xx;
-    clear yy;
-
-    saveas(gcf, [fDir 'XYZ Stats.png']);                                       %Save image to directory
-
-    ko = 0; 
-    if ko == 0                                                                 %automatic close graph windows
-     close();
-    end
-
-%     %Angular statistics TO REVISE--------------------------------------------------------
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 12) = acos(dati(cnt, 8)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 13) = dati(cnt, 8)/dati(cnt, 6); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 14) = atan(dati(cnt, 7)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 15) = rad2deg(dati(cnt, 12)); 
-%     end
-% 
-%     for cnt = 1:1:dataLenght 
-%         dati(cnt, 16) = rad2deg(dati(cnt, 14)); 
-%     end
-% 
-%     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 15, 'Radius (deg)', 0, figSaveMode);
-%     GraphStats(fRep, strcat(fDir, '\STATISTICS\'), dati, 16, 'Azimuth (deg)', 0, figSaveMode);
-  
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on, or everything brakes
-    
-%}   
     fclose(fRep);   %close report
     disp('DONE');
     
