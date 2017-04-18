@@ -27,13 +27,15 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     %Data import---------------------------------------------------------------
     waitbar(2/10, wbar, 'Formatting data');    %update progress bar
     
+    %comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
     comA = ['sed -i "s/\s\{3,\}/,/g" "', fDir, fName,'"']
     system(comA); %Done with sed for cross platform compatibility and is faster that powershell
 
+    %comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"']; %remove first line of data file(description)
     comA = ['sed -i "1d" "', fDir, fName, '"']
     system(comA);
     
-    delete('sed*'); %temporary fix: sed leaves a temp file in the matlab executable folder for some reason, this cleans it up. Otherwise the temp files accumulate> memory leak
+    delete('sed*'); %temporary fix: sed leaves a temp file in the matlab executable folder for some reason, this cleans it up. Otherwise the temp files accumulate> 
     delete('png');
     
     waitbar(3/10, wbar, 'Importing data');    %update progress bar
