@@ -76,11 +76,7 @@ function Gui_main_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.wGetName = '';
     
     %handle preferences
-    try    %try to load preferences
-        handles.wGetName = getpref('EEEanalyzer','wGetName');   %get data
-        handles.wGetDir = getpref('EEEanalyzer','wGetDir');
-        set(handles.txt_WgetPath, 'String', strcat(handles.wGetDir, handles.wGetName)); %udate gui
-    
+    try    %try to load preferences    
         handles.v20Name = getpref('EEEanalyzer','v20Name');
         handles.v20Dir = getpref('EEEanalyzer','v20Dir');
         set(handles.txt_V20Path, 'String', strcat(handles.v20Dir, handles.v20Name));
@@ -110,23 +106,7 @@ function btn_Go_Callback(hObject, eventdata, handles)
     catch A    %if it isn't
         errordlg('Data file path is incorrect.'); %alert
         isDataValid = false;    %set flag to false
-    end
-    
-    
-    try    %check if variable is good by trying to read it
-        tmp = handles.wGetName;
-    catch A    %if it isn't
-        errordlg('Wget executable path is incorrect.'); %alert
-        isDataValid = false;    %set flag to false
-    end
-    
-    try    %check if variable is good by trying to read it
-        tmp = handles.wGetDir;
-    catch A    %if it isn't
-        errordlg('Wget executable path is incorrect.'); %alert
-        isDataValid = false;    %set flag to false
-    end
-    
+    end    
     
     try    %check if variable is good by trying to read it
         tmp = handles.v20Name;
@@ -143,14 +123,12 @@ function btn_Go_Callback(hObject, eventdata, handles)
     end
     
     %save preferences
-    setpref('EEEanalyzer','wGetName', handles.wGetName);
-    getpref('EEEanalyzer','wGetDir', handles.wGetDir);
     getpref('EEEanalyzer','v20Name', handles.v20Name);
     getpref('EEEanalyzer','v20Dir', handles.v20Dir);
     guidata(hObject, handles);  %update global handle
     
     if(isDataValid == true)    %if all data is valid
-        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir, handles.DqmEnable, handles.StatsEnable);  %run analysis
+        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.v20Name, handles.v20Dir, handles.DqmEnable, handles.StatsEnable);  %run analysis
     end
     
     
@@ -183,36 +161,6 @@ function txt_Filepath_Callback(hObject, eventdata, handles)
     
     handles.fName = fName; %move variables to matlab handle
     handles.fDir = fDir;
-    
-    guidata(hObject,handles); %update global handle
-end
-
-%Wget button pressed
-function btn_ChooseWget_Callback(hObject, eventdata, handles)
-    [wGetName, wGetDir] = uigetfile('*.exe', 'Select Wget utility'); %spawn choose file dialog and get data into local variables
-    
-    handles.wGetName = wGetName; %move variables to matlab handle
-    handles.wGetDir = wGetDir;
-    
-    guidata(hObject,handles); %update global handle
-    
-    set(handles.txt_WgetPath, 'String', strcat(wGetDir, wGetName));   %Update the the filepath text
-end
-
-%Wget text changed
-function txt_WgetPath_Callback(hObject, eventdata, handles)
-    str = get(handles.txt_WgetPath, 'String');  %get string into local variable
-    cnt = length(str);  %set counter to string length
-    
-    while(str((cnt - 1) : cnt) ~= '\') %go backwards from the end of the string until you find \
-        cnt = cnt - 1;
-    end
-    
-    wGetName = str(cnt : length(str)); %from the next character to the last \ to the end of the string is the file name
-    wGetDir = str(1 : (cnt - 1));  %from the beginning of the string to the last \ is the directory
-    
-    handles.wGetName = wGetName; %move variables to matlab handle
-    handles.wGetDir = wGetDir;
     
     guidata(hObject,handles); %update global handle
 end

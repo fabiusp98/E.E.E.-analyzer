@@ -1,7 +1,7 @@
 %E.E.E.-analyzer - MAIN by Fabio Pinciroli
 %Copyright 2016-2017 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 
-function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v20Dir, doDqm, doStats)
+function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doStats)
     
     wbar = waitbar(0/10, 'Setting up folders');    %set progress bar
     
@@ -32,9 +32,6 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     comA = ['sed -i "1d" "', fDir, fName, '"']
     system(comA);
-    
-    delete('sed*'); %temporary fix: sed leaves a temp file in the matlab executable folder for some reason, this cleans it up. Otherwise the temp files accumulate> memory leak
-    delete('png');
     
     waitbar(3/10, wbar, 'Importing data');    %update progress bar
     
@@ -254,6 +251,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     
     fclose(fRep);   %close report
     disp('DONE');
+    
+    delete('sed*'); %temporary fix: sed leaves a temp file in the matlab executable folder for some reason, this cleans it up. Otherwise the temp files accumulate> memory leak
+    delete('png');
     
     delete(wbar);   %close waitbar
     msgbox('Conversion finished');
