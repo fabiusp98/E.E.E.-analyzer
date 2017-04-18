@@ -1,7 +1,7 @@
 %E.E.E.-analyzer - MAIN by Fabio Pinciroli
 %Copyright 2016-2017 Fabio Pinciroli DISTRIBUTED UNDER GPL V3 LICENSE
 
-function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v20Dir)
+function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v20Dir, doDqm, doStats)
     
     wbar = waitbar(0/10, 'Setting up folders');    %set progress bar
     
@@ -11,9 +11,9 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
 
     fDir = strcat(fDir, strcat(fName(1: length(fName) - 4), '\'));	%update fDir pointer to new file location
     
-    delete(strcat(fName(1: length(fName) - 3), 'out'));
-    
-    mkdir(fDir, 'DQM');	%create dqm folder
+    if doDqm
+        mkdir(fDir, 'DQM');	%create dqm folder
+    end
     
     waitbar(1/10, wbar, 'Converting from bin');    %update progress bar
     
@@ -68,15 +68,15 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     %download and save the dqm Report------------------------------------------
     %Downloads done with wget instead of the matlab comand because the dqm site has a broken SSL certificate, and the matlab comand refuses to work.
     
-    waitbar(4/10, wbar, 'Downloading DQM data');    %update progress bar
-    
-    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
-    system(comA);
+    if doDqm
+        waitbar(4/10, wbar, 'Downloading DQM data');    %update progress bar
 
-    comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the images
-    system(comA);
+        comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
+        system(comA);
 
-    format long;                                                               %Set full decimal resolution
+        comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the images
+        system(comA);
+    end
     
     %!!!TODO basic data----------------------------------------------
     %header
@@ -153,10 +153,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Track lenght mode: %f \n', mode(dati(:,11)));
     fprintf(fRep, 'Track lenght median: %f \n', median(dati(:,11)));
     
-    %Distribution--------------------------------------------------------    
-    set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
-    GraphStats(dati, 'DIRTY DATA - angular distribution', fDir, figSaveMode);
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on
+    %Distribution--------------------------------------------------------   
+    if doStats
+        set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
+        GraphStats(dati, 'DIRTY DATA - angular distribution', fDir, figSaveMode);
+        set(0,'DefaultFigureVisible','on'); %Turn figs back on
+    end
    
     %count and move entries with chi^2 > %10-------------------------------------------
     waitbar(5/10, wbar, 'Filtering for chi^2');    %update progress bar
@@ -227,7 +229,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         cnt = cnt + 1 ; %advance to the next row
     end
     
-     xlswrite(strcat(fDir, '/clean data.xls'), dati);  %save excel file for tof rejects
+    xlswrite(strcat(fDir, '/clean data.xls'), dati);  %save excel file for tof rejects
     %Clean data header
     fprintf(fRep, '\nCLEAN DATA STATISTICS\n');
      
@@ -239,9 +241,11 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     fprintf(fRep, 'Track lenght median: %f \n', median(dati(:,11)));
     
     %Distribution----------------------------------------------------------
-    set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
-    GraphStats(dati, 'CLEAN DATA - angular distribution', fDir, figSaveMode);
-    set(0,'DefaultFigureVisible','on'); %Turn figs back on
+    if doStats
+        set(0,'DefaultFigureVisible','off');    %Turn off figure visibility
+        GraphStats(dati, 'CLEAN DATA - angular distribution', fDir, figSaveMode);
+        set(0,'DefaultFigureVisible','on'); %Turn figs back on
+    end
     
     fclose(fRep);   %close report
     disp('DONE');

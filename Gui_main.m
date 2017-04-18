@@ -71,8 +71,8 @@ function Gui_main_OpeningFcn(hObject, eventdata, handles, varargin)
     end
     
     handles.GraphFormat = 'png'; %create default values
-    handles.StatsEnable = 0;
-    handles.DqmEnable = 0;
+    handles.StatsEnable = 1;
+    handles.DqmEnable = 1;
     handles.wGetName = '';
     
     %handle preferences
@@ -150,7 +150,7 @@ function btn_Go_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);  %update global handle
     
     if(isDataValid == true)    %if all data is valid
-        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir);  %run analysis
+        EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.wGetName, handles.wGetDir, handles.v20Name, handles.v20Dir, handles.DqmEnable, handles.StatsEnable);  %run analysis
     end
     
     
