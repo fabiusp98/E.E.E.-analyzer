@@ -27,10 +27,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     %Data import---------------------------------------------------------------
     waitbar(2/10, wbar, 'Formatting data');    %update progress bar
     
-    comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
-    system(comA); %Done on powershell for speed
+    %comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | foreach-object {$_ -replace ''\s{3,}'', '',''} | Set-Content ''', fDir, fName, '''"'];  %change from tabulated separation to comma separation
+    comA = ['sed -i "s/\s\{3,\}/,/g" "', fDir, fName,'"']
+    system(comA); %Done with sed for cross platform compatibility and is faster that powershell
 
-    comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"']; %remove first line of data file(description)
+    %comA = ['powershell -Command "(get-content ''', fDir, fName, ''') | select -Skip 1 | Set-Content ''', fDir, fName, '''"']; %remove first line of data file(description)
+    comA = ['sed -i "1d" "', fDir, fName, '"']
     system(comA);
     
     waitbar(3/10, wbar, 'Importing data');    %update progress bar
@@ -71,10 +73,12 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
     if doDqm
         waitbar(4/10, wbar, 'Downloading DQM data');    %update progress bar
 
-        comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
+        %comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'" -p -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the page
+        comA = strcat('wget -nd --no-check-certificate https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate,'/ -P "',fDir,'\DQM\');
         system(comA);
 
-        comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the images
+        %comA = strcat('cd "',strcat(fDir, '\DQM\'),'" &&','"',wGetDir,wGetName,'"  -r -a png -nd --no-check-certificate',' https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate, '/'); %Get the images
+        comA = strcat('wget -r -a png -nd --no-check-certificate https://www1.cnaf.infn.it/eee/monitor//dqmreport/',tName,'/',tDate,'/ -P "',fDir,'\DQM\');
         system(comA);
     end
     
