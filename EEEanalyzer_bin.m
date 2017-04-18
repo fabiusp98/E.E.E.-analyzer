@@ -114,7 +114,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         %theta(deg)
         dati(cnt, 14) = rad2deg(dati(cnt, 8));
         
-        %0-360 direction !!!TODO: validate algorithm
+        %0-360 direction
         if((dati(cnt, 6) > 0) && ((dati(cnt, 7) > 0)))
             dataOut = rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
         else
