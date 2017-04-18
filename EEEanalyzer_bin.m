@@ -227,7 +227,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, wGetName, wGetDir, v20Name, v
         cnt = cnt + 1 ; %advance to the next row
     end
     
-    
+     xlswrite(strcat(fDir, '/clean data.xls'), dati);  %save excel file for tof rejects
     %Clean data header
     fprintf(fRep, '\nCLEAN DATA STATISTICS\n');
      
