@@ -27,10 +27,10 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     %Data import---------------------------------------------------------------
     waitbar(2/10, wbar, 'Formatting data');    %update progress bar
     
-    comA = ['sed -i "s/\s\{3,\}/,/g" "', fDir, fName,'"']
+    comA = ['sed -i "s/\s\{3,\}/,/g" "', fDir, fName,'"'];
     system(comA); %Done with sed for cross platform compatibility and is faster that powershell
 
-    comA = ['sed -i "1d" "', fDir, fName, '"']
+    comA = ['sed -i "1d" "', fDir, fName, '"'];
     system(comA);
     
     waitbar(3/10, wbar, 'Importing data');    %update progress bar
