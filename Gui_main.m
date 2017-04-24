@@ -129,8 +129,7 @@ function btn_Go_Callback(hObject, eventdata, handles)
     
     if(isDataValid == true)    %if all data is valid
         EEEanalyzer_bin(handles.GraphFormat, handles.fName, handles.fDir, handles.v20Name, handles.v20Dir, handles.DqmEnable, handles.StatsEnable);  %run analysis
-        msgbox('Conversion finished');
-        exit();
+        waitfor(msgbox('Conversion finished'));
     end
     
     

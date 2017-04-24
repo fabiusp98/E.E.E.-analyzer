@@ -4,6 +4,7 @@
 function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doStats)
     
     wbar = waitbar(0/10, 'Setting up folders');    %set progress bar
+    wbar.WindowStyle = 'modal';
     
     %Create working folder and convert file------------------------------------
     mkdir(fDir, fName(1: length(fName) - 4));	%create working folder
