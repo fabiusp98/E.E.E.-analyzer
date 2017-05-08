@@ -120,19 +120,15 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
         dati(cnt, 14) = rad2deg(dati(cnt, 8));
         
         %0-360 direction
-        if((dati(cnt, 6) > 0) && ((dati(cnt, 7) > 0)))
-            dataOut = rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+        if(dati(cnt, 6) < 0)
+            dataOut = 180 + rad2deg(atan((dati(cnt, 7) / dati(cnt, 6))));
         else
-            if((dati(cnt, 6) > 0) && ((dati(cnt, 7) < 0)))
-                dataOut = 180 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
+            if(dati(cnt, 7) > 0)
+                dataOut = rad2deg(atan((dati(cnt, 7) / dati(cnt, 6))));
             else
-                if((dati(cnt, 6) < 0) && ((dati(cnt, 7) < 0)))
-                    dataOut = 180 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
-                else
-                    dataOut = 360 + rad2deg(atan((dati(cnt, 7) \ dati(cnt, 6))));
-                end
+                dataOut = 360 + rad2deg(atan((dati(cnt, 7) / dati(cnt, 6))));
             end
-        end        
+        end      
         
         dati(cnt, 15) = dataOut;
         
