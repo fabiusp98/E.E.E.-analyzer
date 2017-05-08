@@ -20,16 +20,17 @@ function GraphStats(dati, name, fDir, figSaveMode)
     end
     %}
     
-    %{
+    
     %polar plot 
     figure('Name', strcat(name, ' - polar'));
     polarplot(dist);
     title(strcat(name, ' - POLAR'));
-    view(90, -90);
+    ax = gca;
+    ax.ThetaZeroLocation = 'top';
     saveas(gcf, [fDir, strcat('POLAR - ', name)], figSaveMode);
     close();
-    %}
     
+    %standard plot
     figure('Name', name);
     plot(dist);
     title(name);
