@@ -117,7 +117,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
         dati(cnt, 13) = asin(dati(cnt, 8));
         
         %theta(deg)
-        dati(cnt, 14) = rad2deg(dati(cnt, 8));
+        dati(cnt, 14) = rad2deg(dati(cnt, 13));
         
         %0-360 direction
         if(dati(cnt, 6) < 0)
