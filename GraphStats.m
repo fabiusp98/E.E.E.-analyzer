@@ -27,6 +27,7 @@ function GraphStats(dati, name, fDir, figSaveMode)
     title(strcat(name, ' - POLAR'));
     ax = gca;
     ax.ThetaZeroLocation = 'top';
+    ax.ThetaDir = 'clockwise';
     saveas(gcf, [fDir, strcat('POLAR - ', name)], figSaveMode);
     close();
     
