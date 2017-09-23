@@ -171,7 +171,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     end
    
     %count and move entries with chi^2 > %10-------------------------------------------
-    waitbar(8/11, wbar, 'Filtering for chi^2');    %update progress bar
+    waitbar(8/11, wbar, 'Filtering for chi');    %update progress bar
     
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
     tot = 0;    %chi2 entries total
