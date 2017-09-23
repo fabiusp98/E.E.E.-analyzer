@@ -146,7 +146,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     fprintf(fRep, 'no hit events: %f\n', dati(dataLenght,2) - dati(dataLenght,12)); 
     
     %save dirty data do first excel file--------------------------
-    csvwrite(strcat(fDir, '/dirty data.csv'), dati);
+    dlmwrite(strcat(fDir, '/dirty data.csv'), dati, 'delimiter','\t');
     
     %Stats for track lenght----------------------------------------------
     fprintf(fRep, 'Track lenght max: %f \n', max(dati(:,11)));
@@ -180,7 +180,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     
     fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);   %save chi2 count to report
     
-    csvwrite(strcat(fDir, '/chi2.csv'), chiArray);  %save excel file for chi2 rejects
+    dlmwrite(strcat(fDir, '/chi2.csv'), chiArray, 'delimiter','\t');  %save excel file for chi2 rejects
     
     %count entries with chi^2 > 10 and tof < 0-------------------------------------------    
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
@@ -215,7 +215,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     
     fprintf(fRep, 'TOF < 0: %f\n', tot);   %save tof count to report
     
-    csvwrite(strcat(fDir, '/tof.csv'), tofArray);  %save excel file for tof rejects
+    dlmwrite(strcat(fDir, '/tof.csv'), tofArray, 'delimiter','\t');  %save excel file for tof rejects
     
     %clean back up for chi^2 > 0 (previously counted and capoed, but not deleted to not hinder the stats for the TOF)---------------
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
@@ -229,7 +229,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
         cnt = cnt + 1 ; %advance to the next row
     end
     
-    csvwrite(strcat(fDir, '/clean data.csv'), dati);  %save excel file for tof rejects
+    dlmwrite(strcat(fDir, '/clean data.csv'), dati, 'delimiter','\t');  %save excel file for tof rejects
     
     %Clean data header
     fprintf(fRep, '\nCLEAN DATA STATISTICS\n');
