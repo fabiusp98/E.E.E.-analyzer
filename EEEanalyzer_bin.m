@@ -146,7 +146,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     fprintf(fRep, 'no hit events: %f\n', dati(dataLenght,2) - dati(dataLenght,12)); 
     
     %save dirty data do first excel file--------------------------
-    writetable(strcat(fDir, '/dirty data.xls'), dati, 'delimiter','\t');
+    writetable(dati, strcat(fDir, '/dirty data.xls'));
     
     %Stats for track lenght----------------------------------------------
     fprintf(fRep, 'Track lenght max: %f \n', max(dati(:,11)));
@@ -180,7 +180,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     
     fprintf(fRep, 'Hits with Chi^2 > 10: %f\n', tot);   %save chi2 count to report
     
-    writetable(strcat(fDir, '/chi2.xls'), chiArray, 'delimiter','\t');  %save excel file for chi2 rejects
+    writetable(chiArray, strcat(fDir, '/chi2.xls'));  %save excel file for chi2 rejects
     
     %count entries with chi^2 > 10 and tof < 0-------------------------------------------    
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
@@ -215,7 +215,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
     
     fprintf(fRep, 'TOF < 0: %f\n', tot);   %save tof count to report
     
-    writetable(strcat(fDir, '/tof.xls'), tofArray, 'delimiter','\t');  %save excel file for tof rejects
+    writetable(tofArray, strcat(fDir, '/tof.xls'));  %save excel file for tof rejects
     
     %clean back up for chi^2 > 0 (previously counted and capoed, but not deleted to not hinder the stats for the TOF)---------------
     cnt = 1;    %arrays in matlab start at 1 ??? – – – :-)
@@ -229,7 +229,7 @@ function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doSta
         cnt = cnt + 1 ; %advance to the next row
     end
     
-    writetable(strcat(fDir, '/clean data.xls'), dati, 'delimiter','\t');  %save excel file for tof rejects
+    writetable(dati, strcat(fDir, '/clean data.xls'));  %save excel file for tof rejects
     
     %Clean data header
     fprintf(fRep, '\nCLEAN DATA STATISTICS\n');
