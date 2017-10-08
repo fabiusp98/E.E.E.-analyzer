@@ -4,12 +4,13 @@
 function EEEanalyzer_bin(figSaveMode, fName, fDir, v20Name, v20Dir, doDqm, doStats)
     
     % Load xlwrite libraries
-    javaaddpath('poi-3.8-20120326.jar');
-    javaaddpath('poi-ooxml-3.8-20120326.jar');
-    javaaddpath('poi-ooxml-schemas-3.8-20120326.jar');
-    javaaddpath('xmlbeans-2.3.0.jar');
-    javaaddpath('dom4j-1.6.1.jar');
-    javaaddpath('stax-api-1.0.1.jar');
+    root = ctfroot
+    javaaddpath(strcat(root, '\poi-3.8-20120326.jar'));
+    javaaddpath(strcat(root, '\poi-ooxml-3.8-20120326.jar'));
+    javaaddpath(strcat(root, '\poi-ooxml-schemas-3.8-20120326.jar'));
+    javaaddpath(strcat(root, '\xmlbeans-2.3.0.jar'));
+    javaaddpath(strcat(root, '\dom4j-1.6.1.jar'));
+    javaaddpath(strcat(root, '\stax-api-1.0.1.jar'));
     
     wbar = waitbar(0/10, 'Setting up folders');    %set progress bar
     wbar.WindowStyle = 'modal';
